@@ -12,8 +12,8 @@
     />
   </head>
   <body>
+    {% include "navbar.html" %}
     <div class="col-md-6 offset-md-3">
-      {% include "navbar.html" %}
       <br />
       {% if not user.is_authenticated %} 
         {% if messages %} 
