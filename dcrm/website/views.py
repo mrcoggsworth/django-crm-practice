@@ -5,6 +5,7 @@
     """
 
 from .forms import SignUpForm
+from .models import Record
 
 from typing import Any, Dict, List, Optional, Union
 
@@ -23,6 +24,11 @@ def home(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: _description_
     """
+
+    records: List[Record] = Record.objects.all()
+    context: Dict[str, Union[List[Record], str]] = {"records": records}
+
+    # return render(request=request, template_name="home.html", context=context)
 
     if request.method == "POST":
         username: str = request.POST.get("username", default={})
@@ -45,7 +51,7 @@ def home(request: HttpRequest) -> HttpResponse:
         print("Its a POST REQUEST!")
 
     if request.method == "GET":
-        return render(request=request, template_name="home.html")
+        return render(request=request, template_name="home.html", context=context)
 
 
 def login_user(request: HttpRequest) -> HttpResponse:
@@ -85,6 +91,7 @@ def register_user(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: _description_
     """
+
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -113,3 +120,22 @@ def register_user(request: HttpRequest) -> HttpResponse:
         )
 
     return render(request=request, template_name="register.html", context={"form": form})
+
+
+def user_record(request: HttpRequest, pk: int) -> HttpResponse:
+    """_summary_
+
+    Args:
+        request (HttpRequest): _description_ 
+        pk (int): _description_
+
+    Returns:
+        HttpResponse: _description_
+    """
+    if request.user.is_authenticated:
+        record: Record = Record.objects.get(id=pk)
+        return render(
+            request=request,
+            template_name="record.html",
+            context={"record": record},
+        )
