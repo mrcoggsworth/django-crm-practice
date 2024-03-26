@@ -1,0 +1,29 @@
+{% extends "base.html" %} 
+
+{% block content %} 
+
+<h1>Customer Record</h1>
+<br>
+<div class="card" style="width: 18rem;">
+    <img src="https://robohash.org/{{ record.id }}" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title">{{ record.first_name }} {{ record.last_name }}</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Email: </strong>{{ record.email }}</li>
+        <li class="list-group-item"><strong>Phone Number: </strong>{{ record.phone }}</li>
+        <li class="list-group-item"><strong>Address: </strong>{{ record.address }}</li>
+        <li class="list-group-item"><strong>City: </strong>{{ record.city }}</li>
+        <li class="list-group-item"><strong>State: </strong>{{ record.state }}</li>
+        <li class="list-group-item"><strong>Zip: </strong>{{ record.zipcode }}</li>
+    </ul>
+    <div class="card-body">
+      <a href="{% url 'home' %}" class="btn btn-secondary">Records</a>
+      <a href="{% url 'update_record' record.id %}" class="btn btn-secondary">Update Record</a>
+    </div>
+    <div class="card-body">
+        <a href="{% url 'delete_record' record.id %}" class="btn btn-danger">Delete Record</a>
+    </div>
+  </div>
+
+{% endblock %}

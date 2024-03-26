@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
+from .models import Record
+
 
 class SignUpForm(UserCreationForm):
     """_summary_
@@ -76,6 +78,37 @@ class SignUpForm(UserCreationForm):
             '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
         )
 
+# Add Record Form
+class CreateRecordForm(forms.ModelForm):
+    """_summary_
+
+    Args:
+        forms (_type_): _description_
+    """
+
+    first_name = forms.CharField(max_length=45, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "First name"}), required=True)
+    last_name = forms.CharField(max_length=45, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Last name"}), required=True)
+    email = forms.EmailField(max_length=254, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email"}), required=True)
+    phone = forms.CharField(max_length=254, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Phone"}), required=True)
+    address = forms.CharField(max_length=254, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Address"}), required=True)
+    city = forms.CharField(max_length=254, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "City"}), required=True)
+    state = forms.CharField(max_length=254, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "State"}), required=True)
+    zipcode = forms.CharField(max_length=45, label="", widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Zipcode"}), required=True)
+
+    class Meta:
+        """_summary_"""
+        model = Record
+        fields = ('first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state', 'zipcode')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'zipcode': forms.TextInput(attrs={'class': 'form-control'}),
+        }
     # username = forms.CharField(
     #     max_length=45,
     #     label="",

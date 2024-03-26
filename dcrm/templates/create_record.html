@@ -1,0 +1,15 @@
+{% extends "base.html" %} 
+
+{% block content %} 
+
+<h1>Create User Record</h1>
+
+<br />
+  <form method="POST" action="{% url 'create_record' %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <br />
+    <button type="submit" class="btn btn-secondary">Create Record</button>
+  </form>
+
+{% endblock %}

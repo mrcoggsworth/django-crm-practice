@@ -4,7 +4,7 @@
         _type_: _description_
     """
 
-from .forms import SignUpForm
+from .forms import SignUpForm, CreateRecordForm
 from .models import Record
 
 from typing import Any, Dict, List, Optional, Union
@@ -119,19 +119,25 @@ def register_user(request: HttpRequest) -> HttpResponse:
             request=request, template_name="register.html", context={"form": form}
         )
 
-    return render(request=request, template_name="register.html", context={"form": form})
+    return render(
+        request=request, template_name="register.html", context={"form": form}
+    )
 
 
 def user_record(request: HttpRequest, pk: int) -> HttpResponse:
     """_summary_
 
     Args:
-        request (HttpRequest): _description_ 
+        request (HttpRequest): _description_
         pk (int): _description_
 
     Returns:
         HttpResponse: _description_
     """
+    if not request.user.is_authenticated:
+        messages.success(request=request, message="You must be logged in to view the records page...")
+        return redirect(to="home")
+
     if request.user.is_authenticated:
         record: Record = Record.objects.get(id=pk)
         return render(
@@ -139,3 +145,81 @@ def user_record(request: HttpRequest, pk: int) -> HttpResponse:
             template_name="record.html",
             context={"record": record},
         )
+
+
+def delete_record(request: HttpRequest, pk: int) -> HttpResponse:
+    """_summary_
+
+    Args:
+        request (HttpRequest): _description_
+        pk (int): _description_
+
+    Returns:
+        HttpResponse: _description_
+    """
+
+    if not request.user.is_authenticated:
+        messages.success(request=request, message="You must be logged in to delete a record...")
+        return redirect(to="home")
+
+    if request.user.is_authenticated:
+        record: Record = Record.objects.get(id=pk)
+        record.delete()
+        messages.success(request=request, message="Record successfully deleted...")
+        return redirect(to="home")
+
+
+def create_record(request: HttpRequest) -> HttpResponse:
+    """_summary_
+
+    Args:
+        request (HttpRequest): _description_
+
+    Returns:
+        HttpResponse: _description_
+    """
+    form = CreateRecordForm(data=request.POST or None)
+
+    if not request.user.is_authenticated:
+        messages.success(request=request, message="You must be logged in to create a record...")
+        return redirect(to="home")
+
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            return render(request=request, template_name="create_record.html", context={"form": form})
+
+        if request.method == "POST":
+            if form.is_valid():
+                form.save()
+                messages.success(request=request, message="Record successfully created...")
+                return redirect(to="home")
+        # return render(request=request, template_name="create_record.html", context={"form": form})
+
+def update_record(request: HttpRequest, pk: int) -> HttpResponse:
+    """_summary_
+
+    Args:
+        request (HttpRequest): _description_
+        pk (int): _description_
+
+    Returns:
+        HttpResponse: _description_
+    """
+
+    if not request.user.is_authenticated:
+        messages.success(request=request, message="You must be logged in to update a record...")
+        return redirect(to="home")
+
+    if request.user.is_authenticated:
+        record: Record = Record.objects.get(id=pk)
+        form = CreateRecordForm(data=request.POST or None, instance=record)
+
+        if request.method == "GET":
+            return render(request=request, template_name="update_record.html", context={"form": form})
+
+        if request.method == "POST":
+            if form.is_valid():
+                form.save()
+                messages.success(request=request, message="Record successfully updated...")
+                return redirect(to="home")
+        # return render(request=request, template_name="create_record.html", context={"form": form})
